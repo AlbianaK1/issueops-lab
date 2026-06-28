@@ -1,0 +1,36 @@
+name: Create User
+
+on: 
+  issues:
+    types: [labeled]
+
+jobs:
+  provision_user:
+    if: github.event.label.name == 'user-provisioning'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Parse Issue Body (Grab contents)
+        id: parse
+        uses: stefanbuck/github-issue-parser@v3
+        with:
+          template-path: .github/ISSUE_TEMPLATE/create_user.yml
+
+      - name: Print User Details
+        run: | 
+          echo "Full name: ${{ steps.parse.outputs.full-name }}"
+          echo "Email: ${{ steps.parse.outputs.email }}"
+          echo "Team: ${{ steps.parse.outputs.team }}"
+          echo "Role: ${{ steps.parse.outputs.role }}"
+          echo "Start date: ${{ steps.parse.outputs.start-date }}"
+
+      - name: Comment on issue
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            ✅ User ${{ steps.parse.outputs.full-name }} has been provisioned.
+            Access granted with role: ${{ steps.parse.outputs.role }}
