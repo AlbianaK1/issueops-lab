@@ -27,8 +27,10 @@ jobs:
           echo "Role: ${{ steps.parse.outputs.role }}"
           echo "Start date: ${{ steps.parse.outputs.start-date }}"
 
-      - name: Comment on issue
+      - name: Print user details
         run: |
-          gh issue comment ${{ github.event.issue.number }} --body "✅ User ${{ steps.parse.outputs.full-name }} has been provisioned. Access granted with role: ${{ steps.parse.outputs.role }}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "Full name: ${{ steps.parse.outputs.full-name }}"
+          echo "Email: ${{ steps.parse.outputs.email }}"
+          echo "Team: ${{ steps.parse.outputs.team }}"
+          echo "Role: ${{ steps.parse.outputs.role }}"
+          echo "Start date: ${{ steps.parse.outputs.start-date }}"
