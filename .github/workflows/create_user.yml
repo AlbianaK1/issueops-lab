@@ -28,9 +28,7 @@ jobs:
           echo "Start date: ${{ steps.parse.outputs.start-date }}"
 
       - name: Comment on issue
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            ✅ User ${{ steps.parse.outputs.full-name }} has been provisioned.
-            Access granted with role: ${{ steps.parse.outputs.role }}
+        run: |
+          gh issue comment ${{ github.event.issue.number }} --body "✅ User ${{ steps.parse.outputs.full-name }} has been provisioned. Access granted with role: ${{ steps.parse.outputs.role }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
