@@ -1,0 +1,43 @@
+name: "New user request"
+description: Request creation of a new user account
+labels: ["user-provisioning"]
+body:
+  - type: input
+    id: full-name
+    attributes:
+      label: Full name
+    validations:
+      required: true
+
+  - type: input
+    id: email
+    attributes:
+      label: Email address
+    validations:
+      required: true
+
+  - type: input
+    id: team
+    attributes:
+      label: Team / department
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Role
+      options:
+        - member
+        - admin
+        - read-only
+    validations:
+      required: true
+
+  - type: input
+    id: start-date
+    attributes:
+      label: Start date
+      placeholder: "YYYY-MM-DD"
+    validations:
+      required: true
