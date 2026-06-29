@@ -17,7 +17,7 @@ jobs:
         id: parse
         uses: stefanbuck/github-issue-parser@v3
         with:
-          template-path: .github/ISSUE_TEMPLATE/create-user.yml
+          template-path: .github/ISSUE_TEMPLATE/create_user.yml
 
       - name: Print User Details
         run: | 
