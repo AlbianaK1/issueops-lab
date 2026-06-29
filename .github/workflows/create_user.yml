@@ -23,7 +23,7 @@ jobs:
         run: | 
           echo "Full name: ${{ steps.parse.outputs.full-name }}"
           echo "Email: ${{ steps.parse.outputs.email }}"
-          echo "Team: ${{ steps.parse.outputs.team--department }}"
+          echo "Team: ${{ steps.parse.outputs.team }}"
           echo "Role: ${{ steps.parse.outputs.role }}"
           echo "Start date: ${{ steps.parse.outputs.start-date }}"
 
