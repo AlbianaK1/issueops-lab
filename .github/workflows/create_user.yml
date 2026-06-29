@@ -21,6 +21,10 @@ jobs:
 
       - name: Print User Details
         run: | 
-          echo "All outputs:"
-          echo "${{ toJSON(steps.parse.outputs) }}"
+            echo "Print User Details: "
+            echo "Full name: ${{ steps.parse.outputs.issueparser_full-name }}"
+            echo "Email: ${{ steps.parse.outputs.issueparser_email }}"
+            echo "Team: ${{ steps.parse.outputs.issueparser_team }}"
+            echo "Role: ${{ steps.parse.outputs.issueparser_role }}"
+            echo "Start date: ${{ steps.parse.outputs.issueparser_start-date }}"
 
