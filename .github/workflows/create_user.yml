@@ -17,20 +17,13 @@ jobs:
         id: parse
         uses: stefanbuck/github-issue-parser@v3
         with:
-          template-path: .github/ISSUE_TEMPLATE/create_user.yml
+          template-path: .github/ISSUE_TEMPLATE/create-user.yml
 
       - name: Print User Details
         run: | 
           echo "Full name: ${{ steps.parse.outputs.full-name }}"
           echo "Email: ${{ steps.parse.outputs.email }}"
-          echo "Team: ${{ steps.parse.outputs.team }}"
+          echo "Team: ${{ steps.parse.outputs.team--department }}"
           echo "Role: ${{ steps.parse.outputs.role }}"
           echo "Start date: ${{ steps.parse.outputs.start-date }}"
 
-      - name: Print user details
-        run: |
-          echo "Full name: ${{ steps.parse.outputs.full-name }}"
-          echo "Email: ${{ steps.parse.outputs.email }}"
-          echo "Team: ${{ steps.parse.outputs.team }}"
-          echo "Role: ${{ steps.parse.outputs.role }}"
-          echo "Start date: ${{ steps.parse.outputs.start-date }}"
