@@ -1,0 +1,45 @@
+name: "New Repo Request"
+description: Request creation of a new GitHub Repository 
+labels: ["create-repo"]
+body:
+  - type: input
+    id: repo-name
+    attributes:
+      label: Repo name
+      placeholder: "my-new-repo"
+    validations:
+      required: true
+
+  - type: input
+    id: description
+    attributes:
+      label: Description
+      placeholder: "What is this repo for?"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: visibility
+    attributes:
+      label: Visibility
+      options:
+        - private
+        - public
+    validations:
+      required: true
+
+  - type: input
+    id: team
+    attributes:
+      label: Team
+      placeholder: "e.g. Frontend Team"
+    validations:
+      required: true
+
+  - type: input
+    id: stack
+    attributes:
+      label: Stack
+      placeholder: "e.g. React, Vue, Next.js"
+    validations:
+      required: true
