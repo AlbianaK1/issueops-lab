@@ -1,14 +1,15 @@
-name: "New Repo Request"
-description: Request creation of a new GitHub Repository 
-labels: ["create-repo"]
+# Used by: Anyone requesting a new repository
+name: "New Repo Request" # this shows on the chooser screen
+description: Request creation of a new GitHub Repository # subtitle
+labels: ["create-repo"] # this triggers the workflow
 body:
-  - type: input
-    id: repo-name
+  - type: input # plain text box
+    id: repo-name # referenced as issueparser_repo-name in workflow
     attributes:
-      label: Repo name
-      placeholder: "my-new-repo"
+      label: Repo name # what the user sees
+      placeholder: "my-new-repo"  # hint text inside the box
     validations:
-      required: true
+      required: true # can't submit without filling this in
 
   - type: input
     id: description
