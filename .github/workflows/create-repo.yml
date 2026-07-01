@@ -1,0 +1,55 @@
+# ==========================================
+# WORKFLOW: New Repo Request
+# Triggered by: creating-repo label
+# ==========================================
+
+name: Create Repo # name shown in the Actions tab
+
+# on: means "when should this workflow wake up"
+on:
+  issues: # listen specifically to issue events
+    types: [labeled] # only wake up when a label is applied to an issue
+                     # not when opened, closed, or commented on
+
+jobs:
+  # provision_repo is the job name - think of it like a function name
+  # it groups all the steps together under one named task
+  # you can have multiple jobs in one workflow eg. provision_repo, notify_team, close_issue
+  provision_repo:
+
+    # if: is the filter - the workflow woke up for ANY label
+    # this line says "only continue if the label is specifically creating-repo"
+    # without this it would run for every single label applied to any issue
+    if: github.event.label.name == 'creating-repo'
+
+    # runs-on: tells GitHub what machine to run this job on
+    # ubuntu-latest is a fresh Linux virtual machine spun up by GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1 - checks out your repo code onto the ubuntu machine
+      # without this the machine has no access to your files
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # Step 2 - stefanbuck/github-issue-parser@v3 is a third party action
+      # built by someone called stefanbuck and published on GitHub marketplace
+      # it reads the issue body and extracts each field value
+      # id: parse is the name we give this step so we can reference its outputs later
+      # template-path tells it which template was used so it knows what fields to look for
+      - name: Parse Issue Body
+        id: parse
+        uses: stefanbuck/github-issue-parser@v3
+        with:
+          template-path: .github/ISSUE_TEMPLATE/create-repo.yml
+
+      # Step 3 - prints each field value to the Actions log
+      # steps.parse.outputs.issueparser_[field id] is how we access each parsed value
+      # issueparser_ prefix is hardcoded into the stefanbuck action specifically
+      - name: Print Repo Details
+        run: |
+          echo "Repo name: ${{ steps.parse.outputs.issueparser_repo-name }}"
+          echo "Description: ${{ steps.parse.outputs.issueparser_description }}"
+          echo "Visibility: ${{ steps.parse.outputs.issueparser_visibility }}"
+          echo "Team: ${{ steps.parse.outputs.issueparser_team }}"
+          echo "Stack: ${{ steps.parse.outputs.issueparser_stack }}"
