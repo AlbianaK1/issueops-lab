@@ -20,7 +20,7 @@ jobs:
     # if: is the filter - the workflow woke up for ANY label
     # this line says "only continue if the label is specifically creating-repo"
     # without this it would run for every single label applied to any issue
-    if: github.event.label.name == 'Creating-repo'
+    if: github.event.label.name == 'Create-repo'
 
     # runs-on: tells GitHub what machine to run this job on
     # ubuntu-latest is a fresh Linux virtual machine spun up by GitHub
