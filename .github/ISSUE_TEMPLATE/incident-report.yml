@@ -1,0 +1,82 @@
+# ==========================================
+# ISSUE TEMPLATE: Incident Report
+# Used by: Anyone reporting a production incident
+# Triggered label: incident
+# Severity label applied automatically by workflow
+# ==========================================
+
+name: "Incident report"        # shown on the template chooser screen
+description: Report a production incident  # subtitle on chooser screen
+labels: ["incident"]           # THIS is what triggers the workflow
+                               # automatically applied when issue is submitted
+body:                          # everything below is the form fields
+
+  # ----------------
+  # INCIDENT TITLE
+  # ----------------
+  - type: input                # plain text box
+    id: title                  # referenced as issueparser_title in workflow
+    attributes:
+      label: Incident title    # what the user sees on the form
+      placeholder: "e.g. Payment service is down"  # hint text inside the box
+    validations:
+      required: true           # must fill in to submit
+
+  # ----------
+  # SEVERITY
+  # ----------
+  - type: dropdown             # dropdown menu — user picks one option
+    id: severity               # referenced as issueparser_severity in workflow
+    attributes:
+      label: Severity
+      description: P1 = critical, P2 = high, P3 = medium  # helper text under label
+      options:                 # the choices in the dropdown
+        - P1-critical          # maps to P1-critical label in workflow
+        - P2-high              # maps to P2-high label in workflow
+        - P3-medium            # maps to P3-medium label in workflow
+    validations:
+      required: true
+
+  # ------------------
+  # SYSTEM AFFECTED
+  # ------------------
+  - type: input                # plain text box
+    id: system                 # referenced as issueparser_system in workflow
+    attributes:
+      label: System affected
+      placeholder: "e.g. Payment API, Login service, Database"
+    validations:
+      required: true
+
+  # -------------
+  # DESCRIPTION
+  # -------------
+  - type: textarea             # large multi-line text box
+    id: description            # referenced as issueparser_description in workflow
+    attributes:
+      label: Description
+      placeholder: "What is happening? What did you observe?"
+    validations:
+      required: true
+
+  # --------------------
+  # STEPS TO REPRODUCE
+  # --------------------
+  - type: textarea             # large multi-line text box
+    id: steps                  # referenced as issueparser_steps in workflow
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Go to...\n2. Click...\n3. See error..."
+    validations:
+      required: false          # optional — not always reproducible
+
+  # ----------------
+  # ON-CALL ENGINEER
+  # ----------------
+  - type: input                # plain text box
+    id: oncall                 # referenced as issueparser_oncall in workflow
+    attributes:
+      label: On-call engineer GitHub username
+      placeholder: "@username"
+    validations:
+      required: true
