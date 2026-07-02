@@ -7,7 +7,7 @@
 
 name: "Incident report"        # shown on the template chooser screen
 description: Report a production incident  # subtitle on chooser screen
-labels: ["incident"]           # THIS is what triggers the workflow
+labels: ["Incident"]           # THIS is what triggers the workflow
                                # automatically applied when issue is submitted
 body:                          # everything below is the form fields
 
