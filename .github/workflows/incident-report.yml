@@ -1,0 +1,115 @@
+# ==========================================
+# WORKFLOW: Incident Report
+# Triggered by: incident label
+# Applies severity label automatically
+# Assigns to on-call engineer
+# Posts checklist comment
+# ==========================================
+
+name: Incident Report # name shown in the Actions tab
+
+# wake up the workflow when a label is applied to an issue
+on:
+  issues:
+    types: [labeled] # only fires when a label is applied, not on every issue event
+
+jobs:
+  handle_incident:             # job name — like a function name
+    # only run if the label applied is specifically "incident"
+    # ignores all other labels applied to any issue
+    if: github.event.label.name == 'incident'
+    runs-on: ubuntu-latest     # run on a fresh Ubuntu virtual machine
+    permissions:
+      issues: write  # gives GITHUB_TOKEN permission to write to issues
+
+    steps:
+      # Step 1 - checkout the repo so the workflow can read your files
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      # Step 2 - parse the issue body and extract all the fields
+      # id: parse means we reference outputs as steps.parse.outputs.issueparser_[field id]
+      # template-path tells the parser which template was used so it knows what fields to look for
+      - name: Parse Issue Body
+        id: parse
+        uses: stefanbuck/github-issue-parser@v3
+        with:
+          template-path: .github/ISSUE_TEMPLATE/incident-report.yml
+
+      # Step 3 - print all parsed fields to the Actions log so we can verify
+      # issueparser_ prefix is hardcoded into the stefanbuck action
+      - name: Print Incident Details
+        run: |
+          echo "Title: ${{ steps.parse.outputs.issueparser_title }}"
+          echo "Severity: ${{ steps.parse.outputs.issueparser_severity }}"
+          echo "System: ${{ steps.parse.outputs.issueparser_system }}"
+          echo "Description: ${{ steps.parse.outputs.issueparser_description }}"
+          echo "On-call: ${{ steps.parse.outputs.issueparser_oncall }}"
+      # Step 4 - apply severity label based on what the submitter picked
+      # each step has its own if: condition checking the severity field
+      # only one of these three steps will run depending on the severity
+
+      # if submitter picked P1-critical — apply P1-critical label
+      - name: Apply P1 label
+        if: steps.parse.outputs.issueparser_severity == 'P1-critical'
+        run: |
+          gh issue edit ${{ github.event.issue.number }} \
+            --add-label "P1-critical"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed to write to the repo
+
+      # if submitter picked P2-high — apply P2-high label
+      - name: Apply P2 label
+        if: steps.parse.outputs.issueparser_severity == 'P2-high'
+        run: |
+          gh issue edit ${{ github.event.issue.number }} \
+            --add-label "P2-high"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed to write to the repo
+
+      # if submitter picked P3-medium — apply P3-medium label
+      - name: Apply P3 label
+        if: steps.parse.outputs.issueparser_severity == 'P3-medium'
+        run: |
+          gh issue edit ${{ github.event.issue.number }} \
+            --add-label "P3-medium"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed to write to the repo
+
+      # Step 5 - assign the issue to the on-call engineer
+      # reads the oncall field from the issue form
+      # removes the @ symbol from the username before assigning
+      - name: Assign to on-call engineer
+        run: |
+          # remove the @ symbol from the username if present
+          ONCALL="${{ steps.parse.outputs.issueparser_oncall }}"
+          ONCALL="${ONCALL/@/}"  # strips the @ symbol
+          
+          # assign the issue to the on-call engineer
+          gh issue edit ${{ github.event.issue.number }} \
+            --add-assignee "$ONCALL"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed to write to the repo
+
+        # Step 6 - post a checklist comment on the issue
+      # gives the on-call engineer a structured list of tasks to work through
+      # the severity is included so they know how urgent it is
+      - name: Post checklist comment
+        run: |
+          gh issue comment ${{ github.event.issue.number }} --body "## 🚨 Incident Report Received
+
+          **Severity:** ${{ steps.parse.outputs.issueparser_severity }}
+          **System:** ${{ steps.parse.outputs.issueparser_system }}
+          **Assigned to:** ${{ steps.parse.outputs.issueparser_oncall }}
+
+          ## Response Checklist
+          - [ ] Acknowledge the incident
+          - [ ] Assess the impact
+          - [ ] Notify the team
+          - [ ] Investigate the root cause
+          - [ ] Apply a fix or workaround
+          - [ ] Verify the fix
+          - [ ] Write a post-mortem
+          - [ ] Close this issue"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # needed to post a comment
